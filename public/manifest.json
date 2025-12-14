@@ -1,0 +1,13 @@
+{
+  "name": "Next.js Performance Demo",
+  "short_name": "Perf Demo",
+  "description": "Experience lightning-fast product browsing with perfect optimization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["development", "productivity", "utilities"]
+  }
