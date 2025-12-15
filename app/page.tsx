@@ -1,5 +1,6 @@
 import { ProductGrid } from './components/ProductGrid'
 import { getProducts } from './lib/api'
+import { HeavyComponent } from './components/HeavyComponent'
 
 // Structured data for SEO
 const structuredData = {
@@ -31,8 +32,11 @@ const structuredData = {
   }
 }
 
-// Server Component - optimal for performance
+// Server Component - optimal for performance (NOT ANYMORE!)
 export default async function Home() {
+  // Artificial delay to increase TTFB
+  await new Promise(resolve => setTimeout(resolve, 800));
+
   // Fetch data on the server for optimal performance
   const initialProducts = await getProducts()
 
@@ -46,6 +50,7 @@ export default async function Home() {
         }}
       />
       <ProductGrid initialProducts={initialProducts.products} />
+      <HeavyComponent />
     </>
   )
 }

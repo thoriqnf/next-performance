@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { ShiftingBanner } from './components/ShiftingBanner'
 
 export const metadata: Metadata = {
   title: 'Next.js Performance Demo - 100/100 Lighthouse Score',
@@ -66,10 +67,19 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
 
         {/* Preload critical resources */}
-        <link rel="preconnect" href="https://cdn.dummyjson.com" />
         <link rel="preconnect" href="https://i.dummyjson.com" />
+        {/* Intentionally blocking script to degrade TBT and First Paint */}
+        <script
+           dangerouslySetInnerHTML={{
+             __html: `
+               const start = Date.now();
+               while (Date.now() - start < 300) {} // Block main thread for 300ms
+             `
+           }}
+         />
       </head>
       <body>
+        <ShiftingBanner />
         {children}
         {/* Service Worker Registration */}
         <script

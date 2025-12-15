@@ -13,6 +13,7 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.thumbnail}
           alt={product.title}
           fill
+          unoptimized={true} // Disable optimization to degrade performance (serve full size)
           className="object-cover transition-transform duration-200 hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           priority={product.id <= 4}

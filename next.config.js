@@ -1,12 +1,8 @@
-/** @type {import('next').NextConfig} */
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
 const nextConfig = {
-  experimental: {
-    optimizePackageImports: ['lucide-react']
-  },
   images: {
     formats: ['image/webp', 'image/avif'],
     remotePatterns: [
@@ -24,13 +20,10 @@ const nextConfig = {
       },
     ],
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production'
-  },
-  // Enable production source maps for debugging
-  productionBrowserSourceMaps: true,
-
-  // Security headers for best practices
+  // Remove production optimizations
+  productionBrowserSourceMaps: false,
+  
+  // Security headers (keep these as they don't affect performance much, but good for realism)
   async headers() {
     return [
       {
