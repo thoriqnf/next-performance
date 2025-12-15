@@ -35,7 +35,7 @@ const structuredData = {
 // Server Component - optimal for performance (NOT ANYMORE!)
 export default async function Home() {
   // Artificial delay to increase TTFB
-  await new Promise(resolve => setTimeout(resolve, 800));
+  await new Promise(resolve => setTimeout(resolve, 2000));
 
   // Fetch data on the server for optimal performance
   const initialProducts = await getProducts()

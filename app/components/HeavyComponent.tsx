@@ -9,8 +9,8 @@ export function HeavyComponent() {
   useEffect(() => {
     // Simulate heavy calculation on mount to block main thread
     const startTime = performance.now();
-    while (performance.now() - startTime < 500) {
-      // Block thread for 500ms
+    while (performance.now() - startTime < 1000) {
+      // Block thread for 1000ms
       Math.random();
     }
     
@@ -26,7 +26,7 @@ export function HeavyComponent() {
   return (
     <div className="hidden">
       {/* Render invisible elements to add DOM weight without affecting visual design */}
-      {data.slice(0, 100).map(item => (
+      {data.slice(0, 3000).map(item => (
         <div key={item.id}>{item.title}</div>
       ))}
     </div>

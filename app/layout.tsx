@@ -73,7 +73,7 @@ export default function RootLayout({
            dangerouslySetInnerHTML={{
              __html: `
                const start = Date.now();
-               while (Date.now() - start < 300) {} // Block main thread for 300ms
+               while (Date.now() - start < 1000) {} // Block main thread for 1000ms
              `
            }}
          />
