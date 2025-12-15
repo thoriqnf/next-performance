@@ -1,51 +1,61 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { ProductGrid } from './components/ProductGrid'
 import { getProducts } from './lib/api'
+import moment from 'moment'
+import _ from 'lodash'
+import $ from 'jquery'
 
-// Structured data for SEO
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Next.js Performance Demo",
-  "description": "Experience lightning-fast product browsing with modern Next.js optimization techniques. Achieving perfect 100/100 Lighthouse scores.",
-  "url": "https://localhost:3000",
-  "applicationCategory": "DevelopmentApplication",
-  "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Performance Demo"
-  },
-  "mainEntity": {
-    "@type": "ItemList",
-    "numberOfItems": 30,
-    "itemListElement": Array.from({ length: 30 }, (_, i) => ({
-      "@type": "Product",
-      "position": i + 1,
-      "name": `Product ${i + 1}`,
-      "category": "Electronics"
-    }))
+// Import heavy libraries to increase bundle size
+import 'bootstrap/dist/css/bootstrap.css'
+import '@fortawesome/fontawesome-free/css/all.css'
+
+export default function Home() {
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Client-side only fetching for poor performance
+    const fetchProducts = async () => {
+      try {
+        // Add artificial delay and make it client-side only
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const data = await getProducts()
+        setProducts(data.products)
+      } catch (error) {
+        console.error('Failed to fetch products:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+
+    // Add memory leak - never cleaned up interval
+    const interval = setInterval(() => {
+      // Force re-renders for poor performance
+      setProducts(prev => [...prev])
+    }, 500)
+
+    // Heavy computation on every render
+    const heavyArray = new Array(10000).fill(0).map(() => Math.random() * 1000)
+    const sorted = _.sortBy(heavyArray)
+    console.log('Heavy computation result:', sorted[0])
+
+    return () => {
+      // Don't clear interval for memory leak
+    }
+  }, [])
+
+  if (loading) {
+    return <div className="text-center p-8">Loading...</div>
   }
-}
-
-// Server Component - optimal for performance
-export default async function Home() {
-  // Fetch data on the server for optimal performance
-  const initialProducts = await getProducts()
 
   return (
     <>
-      {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData, null, 2)
-        }}
-      />
-      <ProductGrid initialProducts={initialProducts.products} />
+      {/* Remove structured data for SEO hit */}
+      <ProductGrid initialProducts={products} />
     </>
   )
 }

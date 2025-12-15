@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Product } from '@/app/lib/api'
 
 interface ProductCardProps {
@@ -9,19 +8,18 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="bg-card border border-border rounded-lg card-shadow card-shadow-hover transition-all duration-200 overflow-hidden">
       <div className="relative h-48 w-full overflow-hidden bg-muted">
-        <Image
+        {/* Replace Next.js Image with unoptimized img tag for poor performance */}
+        <img
           src={product.thumbnail}
-          alt={product.title}
-          fill
-          className="object-cover transition-transform duration-200 hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          priority={product.id <= 4}
-          onError={(e) => {
-            // Fallback for broken images - monochrome SVG
-            const target = e.target as HTMLImageElement
-            target.src = `data:image/svg+xml;base64,${btoa(
-              `<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="hsl(var(--muted))"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="hsl(var(--muted-foreground))" font-family="system-ui, sans-serif" font-size="14">No Image</text></svg>`
-            )}`
+          // Remove alt text for accessibility hit
+          className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
+          // Remove responsive sizing and priority loading
+          loading="eager"
+          style={{
+            // Force large image dimensions
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
           }}
         />
         <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-full border border-border">

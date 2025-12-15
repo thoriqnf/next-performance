@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { Product, getProducts } from '@/app/lib/api'
 import { ProductCard } from './ProductCard'
 import { SearchBar } from './SearchBar'
+import moment from 'moment'
+import _ from 'lodash'
 
 interface ProductGridProps {
   initialProducts?: Product[]
@@ -14,15 +16,30 @@ export function ProductGrid({ initialProducts = [] }: ProductGridProps) {
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Memoize filtered products to prevent unnecessary re-renders
-  const filteredProducts = useMemo(() => {
-    if (!searchQuery) return products
-    return products.filter(product =>
-      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [products, searchQuery])
+  // Remove useMemo for poor performance - recalculate on every render
+  const filteredProducts = (function() {
+    // Add expensive synchronous operations
+    const startTime = performance.now()
+
+    let result = products
+    if (searchQuery) {
+      result = products.filter(product =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Expensive computation on every render
+    const heavyComputation = _.reduce(result, (acc, product) => {
+      return acc + _.sum(_.range(100).map(() => Math.sqrt(product.price * Math.random())))
+    }, 0)
+
+    console.log('Heavy computation result:', heavyComputation)
+    console.log('Filter time:', performance.now() - startTime)
+
+    return result
+  })()
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query)
@@ -37,11 +54,17 @@ export function ProductGrid({ initialProducts = [] }: ProductGridProps) {
       const result = await getProducts(query.trim())
       setProducts(result.products)
     } catch (error) {
+      // Keep console.error for best practices violation
       console.error('Failed to search products:', error)
       // Keep current products on error
     } finally {
       setLoading(false)
     }
+
+    // Force re-render every second for poor performance
+    setTimeout(() => {
+      setProducts(prev => [...prev])
+    }, 1000)
   }
 
   return (

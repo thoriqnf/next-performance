@@ -20,20 +20,19 @@ export interface ProductResponse {
 }
 
 export async function getProducts(search?: string): Promise<ProductResponse> {
+  // Remove caching - no more performance optimization
   const url = search
-    ? `https://dummyjson.com/products/search?q=${encodeURIComponent(search)}`
-    : 'https://dummyjson.com/products'
+    ? `http://dummyjson.com/products/search?q=${encodeURIComponent(search)}`
+    : 'http://dummyjson.com/products'
 
-  const res = await fetch(url, {
-    next: {
-      revalidate: 3600, // Cache for 1 hour
-      tags: ['products']
-    }
-  })
+  // Add artificial delay to simulate poor performance
+  await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000))
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch products')
-  }
+  // Remove error handling for best practices violation
+  const res = await fetch(url)
+
+  // Console error in production for best practices hit
+  console.error('API Error: This should not be in production', res.status)
 
   return res.json()
 }

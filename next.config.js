@@ -1,61 +1,49 @@
 /** @type {import('next').NextConfig} */
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
-
 const nextConfig = {
-  experimental: {
-    optimizePackageImports: ['lucide-react']
-  },
+  // Remove bundle analyzer optimization
+  // Disable image optimization for poor performance
   images: {
-    formats: ['image/webp', 'image/avif'],
+    unoptimized: true,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.dummyjson.com',
+        protocol: 'http',
+        hostname: 'dummyjson.com',
         port: '',
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'http',
         hostname: 'i.dummyjson.com',
         port: '',
         pathname: '/**',
       },
     ],
   },
+  // Keep console logs in production for best practices violation
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production'
+    removeConsole: false
   },
-  // Enable production source maps for debugging
-  productionBrowserSourceMaps: true,
+  // Disable production source maps inconsistently
+  productionBrowserSourceMaps: false,
 
-  // Security headers for best practices
+  // Remove security headers for best practices violations
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
+          // Remove security headers
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
+            value: 'ALLOWALL'
           }
         ]
       }
     ]
-  }
+  },
+
+  // Empty turbopack config to silence warning
+  turbopack: {}
 }
 
-module.exports = withBundleAnalyzer(nextConfig)
+module.exports = nextConfig
